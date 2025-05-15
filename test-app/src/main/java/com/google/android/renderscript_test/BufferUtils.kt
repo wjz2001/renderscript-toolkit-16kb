@@ -28,6 +28,7 @@ import java.util.Random
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
+import androidx.core.graphics.createBitmap
 
 /**
  * A vector of 4 integers.
@@ -480,7 +481,10 @@ fun vectorSizeOfBitmap(bitmap: Bitmap): Int {
 }
 
 fun duplicateBitmap(original: Bitmap): Bitmap {
-    val copy = Bitmap.createBitmap(original.width, original.height, original.config)
+    val config = original.config ?: throw java.lang.IllegalArgumentException(
+        "Bitmap config cannot be null."
+    )
+    val copy = createBitmap(original.width, original.height, config)
     val canvas = Canvas(copy)
     canvas.drawBitmap(original, 0f, 0f, null)
     return copy

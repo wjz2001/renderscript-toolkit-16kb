@@ -18,6 +18,7 @@ package com.google.android.renderscript
 
 import android.graphics.Bitmap
 import java.lang.IllegalArgumentException
+import androidx.core.graphics.createBitmap
 
 // This string is used for error messages.
 private const val externalName = "RenderScript Toolkit"
@@ -1030,7 +1031,7 @@ object Toolkit {
         validateBitmap("resize", inputBitmap)
         validateRestriction("resize", outputSizeX, outputSizeY, restriction)
 
-        val outputBitmap = Bitmap.createBitmap(outputSizeX, outputSizeY, Bitmap.Config.ARGB_8888)
+        val outputBitmap = createBitmap(outputSizeX, outputSizeY)
         nativeResizeBitmap(nativeHandle, inputBitmap, outputBitmap, restriction)
         return outputBitmap
     }
@@ -1082,7 +1083,7 @@ object Toolkit {
                     "$sizeX and $sizeY were provided."
         }
 
-        val outputBitmap = Bitmap.createBitmap(sizeX, sizeY, Bitmap.Config.ARGB_8888)
+        val outputBitmap = createBitmap(sizeX, sizeY)
         nativeYuvToRgbBitmap(nativeHandle, inputArray, sizeX, sizeY, outputBitmap, format.value)
         return outputBitmap
     }
@@ -1497,8 +1498,12 @@ internal fun validateBitmap(
     }
 }
 
-internal fun createCompatibleBitmap(inputBitmap: Bitmap) =
-    Bitmap.createBitmap(inputBitmap.width, inputBitmap.height, inputBitmap.config)
+internal fun createCompatibleBitmap(inputBitmap: Bitmap): Bitmap {
+    val config = inputBitmap.config ?: throw IllegalArgumentException(
+        "$externalName. Bitmap config cannot be null."
+    )
+    return createBitmap(inputBitmap.width, inputBitmap.height, config)
+}
 
 internal fun validateHistogramDotCoefficients(
     coefficients: FloatArray?,
