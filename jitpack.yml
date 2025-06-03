@@ -1,0 +1,5 @@
+#!/bin/bash
+
+before_install:
+- curl PASTE_RAW_LINK_TO_GIST | sh
+
